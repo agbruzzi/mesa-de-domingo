@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mesa de Domingo — Todo dia com gosto de domingo</title>
+<meta name="description" content="No seu WhatsApp, todo dia: um golpe para desarmar, uma história para contar e uma conquista para celebrar. Feito para quem tem mais de 60 anos e não nasceu ontem.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cafe:#2B2119; --toalha:#FBF4E8; --branco:#FFFFFF; --telha:#9C3F1D;
+    --verde:#22623F; --azul:#14556B; --ambar:#F6C453; --ambar-texto:#7A4E00; --cinza:#5C5247;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{font-size:100%}
+  body{
+    font-family:'Atkinson Hyperlegible Next','Atkinson Hyperlegible','Segoe UI',Roboto,Arial,sans-serif;
+    background:var(--toalha); color:var(--cafe);
+    font-size:1.5rem; line-height:1.5;
+  }
+  h1,h2,h3{line-height:1.25}
+  h1{font-size:2.5rem;font-weight:800}
+  h2{font-size:2rem;font-weight:800;margin-bottom:.75rem}
+  h3{font-size:1.5rem;font-weight:700}
+  p{max-width:34em}
+  section{padding:4rem 1.25rem}
+  .wrap{max-width:1060px;margin:0 auto}
+  .destaque{color:var(--telha)}
+  a{color:var(--azul)}
+
+  /* Botões — alvo mínimo 48px, CTA 64px */
+  .btn{
+    display:inline-block;background:var(--telha);color:var(--branco);
+    font-size:1.7rem;font-weight:700;text-decoration:none;text-align:center;
+    padding:1.1rem 2rem;border-radius:16px;border:none;cursor:pointer;
+    min-height:64px;min-width:48px;
+  }
+  .btn:hover,.btn:focus-visible{background:#7E3115;outline:4px solid var(--cafe);outline-offset:3px}
+  .btn-opcao{
+    display:block;width:100%;background:var(--branco);color:var(--cafe);
+    border:3px solid var(--azul);border-radius:16px;font-size:1.7rem;font-weight:700;
+    padding:.9rem 1rem;margin:.5rem 0;min-height:56px;cursor:pointer;text-align:center;
+    font-family:inherit;
+  }
+  .btn-opcao:hover,.btn-opcao:focus-visible{background:#EAF2F5;outline:4px solid var(--cafe);outline-offset:2px}
+
+  /* Header */
+  header{background:var(--toalha);padding:1.25rem;border-bottom:3px solid var(--ambar)}
+  header .wrap{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+  header svg{height:56px;width:auto}
+
+  /* Hero */
+  .hero{text-align:left;padding-top:3rem}
+  .hero .wrap{display:grid;grid-template-columns:1fr;gap:2.5rem}
+  @media(min-width:900px){.hero .wrap{grid-template-columns:1.2fr 1fr;align-items:center}}
+  .hero p.grande{font-size:1.5rem;margin:1.25rem 0 2rem}
+  .selo{display:inline-block;background:var(--ambar);color:var(--cafe);font-weight:700;
+    padding:.4rem 1rem;border-radius:999px;font-size:1.35rem;margin-bottom:1rem}
+
+  /* Telefone / demo */
+  .telefone{
+    background:var(--branco);border:3px solid var(--cafe);border-radius:28px;
+    max-width:420px;margin:0 auto;overflow:hidden;box-shadow:0 8px 0 rgba(43,33,25,.15);
+  }
+  .tel-topo{background:var(--verde);color:var(--branco);padding:.9rem 1.2rem;font-weight:700;font-size:1.35rem;display:flex;align-items:center;gap:.6rem}
+  .tel-corpo{padding:1rem;background:#F2EBDD;min-height:340px}
+  .msg{border-radius:16px;padding:.9rem 1rem;margin:.6rem 0;font-size:1.5rem;max-width:95%}
+  .msg-app{background:var(--branco);border:2px solid #E3D9C8}
+  .msg-user{background:#DCF3D0;margin-left:auto}
+  .msg small{color:var(--cinza);font-size:1.35rem;display:block;margin-top:.3rem}
+  .audio-fake{display:flex;align-items:center;gap:.6rem;font-weight:700}
+  .audio-fake .play{width:48px;height:48px;border-radius:50%;background:var(--verde);color:#fff;border:none;font-size:1.3rem;cursor:pointer}
+  .barra{flex:1;height:8px;background:#CBBFA8;border-radius:4px;position:relative}
+  .barra::after{content:"";position:absolute;left:0;top:0;height:100%;width:35%;background:var(--verde);border-radius:4px}
+
+  /* Cards dos núcleos */
+  .nucleos{display:grid;gap:1.5rem;grid-template-columns:1fr}
+  @media(min-width:820px){.nucleos{grid-template-columns:repeat(3,1fr)}}
+  .card{background:var(--branco);border-radius:20px;padding:2rem;border-top:10px solid var(--azul)}
+  .card.verde{border-top-color:var(--verde)}
+  .card.ambar{border-top-color:var(--ambar)}
+  .card .icone{font-size:2.5rem;display:block;margin-bottom:.75rem}
+  .card h3{margin-bottom:.6rem}
+  .card p{font-size:1.5rem}
+
+  /* Faixas alternadas */
+  .faixa-branca{background:var(--branco)}
+  .faixa-azul{background:var(--azul);color:var(--branco)}
+  .faixa-azul p{color:var(--branco)}
+  .faixa-azul h2{color:var(--branco)}
+
+  /* Preços */
+  .planos{display:grid;gap:1.5rem;grid-template-columns:1fr;align-items:stretch}
+  @media(min-width:820px){.planos{grid-template-columns:1fr 1.15fr 1fr}}
+  .plano{background:var(--branco);border-radius:20px;padding:2rem;border:3px solid #E3D9C8;display:flex;flex-direction:column}
+  .plano.heroi{border:4px solid var(--telha);position:relative}
+  .plano.heroi .faixa-heroi{position:absolute;top:-1.1rem;left:50%;transform:translateX(-50%);
+    background:var(--telha);color:#fff;font-weight:700;padding:.3rem 1.2rem;border-radius:999px;font-size:1.35rem;white-space:nowrap}
+  .preco{font-size:2.4rem;font-weight:800;margin:.5rem 0}
+  .preco small{font-size:1.35rem;font-weight:400;color:var(--cinza)}
+  .plano ul{list-style:none;margin:1rem 0 1.5rem;flex:1}
+  .plano li{padding:.45rem 0 .45rem 2.2rem;position:relative;font-size:1.5rem}
+  .plano li::before{content:"✓";position:absolute;left:0;top:.45rem;color:var(--verde);font-weight:800;font-size:1.3rem}
+
+  /* FAQ */
+  details{background:var(--branco);border-radius:16px;margin:.75rem 0;border:2px solid #E3D9C8}
+  summary{font-size:1.5rem;font-weight:700;padding:1.25rem;cursor:pointer;min-height:48px}
+  summary:focus-visible{outline:4px solid var(--cafe);outline-offset:2px}
+  details p{padding:0 1.25rem 1.25rem}
+
+  /* Compromissos */
+  .compromissos{display:grid;gap:1rem;grid-template-columns:1fr}
+  @media(min-width:820px){.compromissos{grid-template-columns:1fr 1fr}}
+  .compromisso{background:var(--branco);border-radius:16px;padding:1.5rem;border-left:8px solid var(--verde)}
+  .compromisso strong{display:block;font-size:1.5rem;margin-bottom:.3rem}
+
+  footer{background:var(--cafe);color:var(--toalha);padding:3rem 1.25rem;font-size:1.35rem}
+  footer a{color:var(--ambar)}
+  footer p{margin:.4rem 0}
+
+  .pulo{position:absolute;left:-9999px;top:0;background:var(--cafe);color:#fff;padding:1rem;z-index:10}
+  .pulo:focus{left:1rem;top:1rem}
+  .oculto{display:none}
+  [aria-live] .msg{animation:chega .3s ease}
+  @keyframes chega{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<a class="pulo" href="#principal">Pular para o conteúdo</a>
+
+<header>
+  <div class="wrap">
+    <svg viewBox="0 0 760 160" role="img" aria-label="Mesa de Domingo" height="56">
+      <g fill="#9C3F1D">
+        <circle cx="80" cy="80" r="34"/>
+        <rect x="72" y="7" width="16" height="30" rx="8"/>
+        <rect x="72" y="7" width="16" height="30" rx="8" transform="rotate(45 80 80)"/>
+        <rect x="72" y="7" width="16" height="30" rx="8" transform="rotate(90 80 80)"/>
+        <rect x="72" y="7" width="16" height="30" rx="8" transform="rotate(135 80 80)"/>
+        <rect x="72" y="7" width="16" height="30" rx="8" transform="rotate(180 80 80)"/>
+        <rect x="72" y="7" width="16" height="30" rx="8" transform="rotate(225 80 80)"/>
+        <rect x="72" y="7" width="16" height="30" rx="8" transform="rotate(270 80 80)"/>
+        <rect x="72" y="7" width="16" height="30" rx="8" transform="rotate(315 80 80)"/>
+      </g>
+      <text x="168" y="100" font-family="'Atkinson Hyperlegible Next','Segoe UI',Arial,sans-serif" font-size="58" font-weight="800" fill="#2B2119">Mesa de Domingo</text>
+    </svg>
+  </div>
+</header>
+
+<main id="principal">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="selo">Sem instalar nada — funciona no seu WhatsApp</span>
+      <h1>Todo dia com <span class="destaque">gosto de domingo</span>.</h1>
+      <p class="grande">Um golpe para desarmar. Uma história para contar. Uma conquista para celebrar. Tudo no WhatsApp que você já usa — uma pergunta de cada vez, resposta por voz se você preferir, e <strong>nenhum anúncio</strong>.</p>
+      <a class="btn" href="simulador/">Experimentar agora — é de graça</a>
+      <p style="margin-top:1rem;font-size:1.35rem;color:var(--cinza)">Feito no Brasil, para quem não nasceu ontem.</p>
+    </div>
+
+    <!-- Demo interativa -->
+    <div>
+      <div class="telefone" aria-label="Demonstração do Mesa de Domingo no WhatsApp">
+        <div class="tel-topo">☀️ Mesa de Domingo <span style="font-weight:400;font-size:.95rem">· hoje às 9:00</span></div>
+        <div class="tel-corpo" id="demo-chat" aria-live="polite">
+          <div class="msg msg-app">
+            <strong>Bom dia, Detetive! 🕵️</strong><br>
+            Chegou o caso de hoje. Esta mensagem circulou ontem em Minas:
+            <small>Mesa de Domingo</small>
+          </div>
+          <div class="msg msg-app" style="border-left:6px solid var(--telha)">
+            "Mãe, quebrei meu celular, este é meu número novo. Preciso que faça um Pix urgente…"
+          </div>
+          <div class="msg msg-app"><strong>É golpe ou é verdade?</strong></div>
+          <div id="demo-botoes">
+            <button class="btn-opcao" onclick="demoResposta('golpe')">🚨 É golpe</button>
+            <button class="btn-opcao" onclick="demoResposta('verdade')">✅ É verdade</button>
+            <button class="btn-opcao" onclick="demoResposta('naosei')">🤔 Não sei</button>
+          </div>
+        </div>
+      </div>
+      <p style="text-align:center;font-size:1.35rem;color:var(--cinza);margin-top:.75rem">👆 Pode tocar — é uma demonstração de verdade.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="faixa-branca" id="como-funciona">
+  <div class="wrap">
+    <h2>Três momentos por dia. Cinco minutos cada.</h2>
+    <p style="margin-bottom:2rem">O Mesa de Domingo manda três mensagens por dia no seu WhatsApp. Você responde quando quiser — o tempo é seu, aqui nada expira.</p>
+    <div class="nucleos">
+      <div class="card">
+        <span class="icone" aria-hidden="true">🕵️</span>
+        <h3>Detetive de Golpes</h3>
+        <p>O jogo diário "É golpe ou é verdade?" com casos reais desta semana. E o mais importante: <strong>recebeu mensagem suspeita? Encaminhe para a gente</strong> e ouça a resposta em minutos, em bom português falado.</p>
+      </div>
+      <div class="card ambar">
+        <span class="icone" aria-hidden="true">📻</span>
+        <h3>Baú de Histórias</h3>
+        <p>Uma pergunta por dia sobre a sua vida — "como era a rua onde você cresceu?". Você responde por áudio, do jeito que já faz. As histórias ficam guardadas para sempre, e sua família ouve e pede mais.</p>
+      </div>
+      <div class="card verde">
+        <span class="icone" aria-hidden="true">🏆</span>
+        <h3>Missão do Dia</h3>
+        <p>Uma tarefa de 5 minutos que termina com você sabendo fazer algo novo no celular: fixar o contato da filha, mandar sua localização, fazer videochamada. Com o botão "me perdi, recomeçar" — sem julgamento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARA A FAMÍLIA -->
+<section class="faixa-azul">
+  <div class="wrap">
+    <h2>Para filhas e filhos: tranquilidade que não é vigilância.</h2>
+    <p style="font-size:1.6rem;margin-bottom:1.5rem">No Brasil, o prejuízo médio de um golpe contra uma pessoa 60+ é de <strong>R$ 4.820</strong> — quase 5 vezes o dos mais jovens (Silverguard/Senado, 2025). O Mesa de Domingo treina todos os dias a habilidade que evita esse prejuízo.</p>
+    <p style="font-size:1.5rem">Com o plano da família, você recebe o <strong>painel de tranquilidade</strong>: "sua mãe treinou hoje", "3 golpes circulando na região dela esta semana". E quando ela precisar de um empurrão, o Mesa de Domingo não manda cobrança para ela — manda um toque para <em>você</em>: "ligue e peça a história do fusca". De brinde, o maior presente: as histórias da sua família, na voz de quem viveu.</p>
+  </div>
+</section>
+
+<!-- PREÇOS -->
+<section id="precos">
+  <div class="wrap">
+    <h2>Preço de gente honesta.</h2>
+    <p style="margin-bottom:2.5rem">Sem anúncio, sem pegadinha, sem "vidas". A segurança básica é gratuita para sempre — ninguém fica desprotegido por não pagar. Cancela quando quiser, sem ligação de retenção.</p>
+    <div class="planos">
+      <div class="plano">
+        <h3>Grátis</h3>
+        <p class="preco">R$ 0</p>
+        <ul>
+          <li>Jogo do Detetive todos os dias</li>
+          <li>5 verificações de mensagens suspeitas por mês</li>
+          <li>1 pergunta do Baú por semana</li>
+        </ul>
+        <a class="btn" style="background:var(--azul)" href="simulador/">Começar grátis</a>
+      </div>
+      <div class="plano heroi">
+        <span class="faixa-heroi">O escolhido das famílias</span>
+        <h3>Plano Mesa (anual)</h3>
+        <p class="preco">R$ 179<small>/ano — sai R$ 14,90 por mês</small></p>
+        <ul>
+          <li>Verificação de golpes <strong>ilimitada e prioritária</strong></li>
+          <li>Alerta preventivo: golpes circulando na sua região</li>
+          <li>Painel de tranquilidade para a família</li>
+          <li>Baú de Histórias todo dia, guardado para sempre</li>
+          <li>Todas as trilhas da Missão do Dia</li>
+        </ul>
+        <a class="btn" href="checkout/">Assinar o Plano Mesa</a>
+      </div>
+      <div class="plano">
+        <h3>Mensal</h3>
+        <p class="preco">R$ 19,90<small>/mês</small></p>
+        <ul>
+          <li>Tudo do Plano Mesa</li>
+          <li>Para experimentar antes de assinar o ano</li>
+        </ul>
+        <a class="btn" style="background:var(--azul)" href="checkout/">Assinar mensal</a>
+      </div>
+    </div>
+    <p style="margin-top:1.5rem;font-size:1.35rem;color:var(--cinza)">Pagamento por Pix ou cartão, direto no nosso site — seguro e sem complicação. Em breve: o Livro do Baú impresso, com as histórias da sua família.</p>
+  </div>
+</section>
+
+<!-- COMPROMISSOS -->
+<section class="faixa-branca">
+  <div class="wrap">
+    <h2>Nossos compromissos — por escrito.</h2>
+    <div class="compromissos">
+      <div class="compromisso"><strong>Zero anúncio, zero pegadinha.</strong> Nada de propaganda pulando na tela, "vidas", contador de urgência ou botão escondido para assinar sem querer.</div>
+      <div class="compromisso"><strong>Ninguém aqui é "vovô".</strong> Você é detetive, contador de histórias, dono da casa. Tratamos você como o adulto mais experiente da mesa — porque é o que você é.</div>
+      <div class="compromisso"><strong>Errar não tem castigo.</strong> O botão "Não sei" vale tanto quanto acertar. Quem erra aprende o truque do golpe — e chega na frente da próxima vez.</div>
+      <div class="compromisso"><strong>Suas histórias são suas.</strong> Seus áudios ficam guardados com segurança no Brasil, só a família que VOCÊ convidar pode ouvir, e você pode baixar ou apagar tudo quando quiser (LGPD).</div>
+      <div class="compromisso"><strong>Honestidade sobre o que fazemos.</strong> O Mesa de Domingo exercita a mente e aproxima a família. Não prometemos prevenir doenças — quem promete isso está te enganando.</div>
+      <div class="compromisso"><strong>Na dúvida, não pague.</strong> Nosso verificador responde rápido e com clareza, mas nenhum sistema é infalível — na dúvida, a regra da casa é: não pague, não clique, pergunte.</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO COMEÇAR -->
+<section id="como-comecar">
+  <div class="wrap" style="text-align:center">
+    <h2>Começar leva 1 minuto. De verdade.</h2>
+    <p style="margin:1rem auto 2rem;font-size:1.6rem">Experimente agora mesmo, aqui no navegador — é a conversa de verdade, igualzinha à que chega no WhatsApp. O número oficial de WhatsApp do piloto está em ativação; as primeiras vagas são das oficinas de Belo Horizonte.</p>
+    <a class="btn" href="simulador/">☀️ Experimentar a mesa agora</a>
+    <p style="margin:1.5rem auto 0;color:var(--cinza);font-size:1.35rem">Piloto começando por Belo Horizonte, com vagas limitadas nas comunidades parceiras.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faixa-branca">
+  <div class="wrap">
+    <h2>Perguntas de quem senta à mesa</h2>
+    <details>
+      <summary>Preciso baixar aplicativo?</summary>
+      <p>Não. O Mesa de Domingo funciona dentro do WhatsApp que você já tem. Se um dia você quiser mais, teremos um aplicativo próprio — mas ninguém precisa dele para participar.</p>
+    </details>
+    <details>
+      <summary>Eu não escrevo bem no celular. Consigo usar?</summary>
+      <p>Consegue — e foi feito para isso. Tudo pode ser respondido tocando num botão ou mandando áudio. E tudo que a gente manda, você pode ouvir em voz alta em vez de ler.</p>
+    </details>
+    <details>
+      <summary>Como funciona a verificação de golpe?</summary>
+      <p>Recebeu uma mensagem, ligação ou cobrança esquisita? Encaminhe para o número do Mesa de Domingo — do mesmo jeito que você encaminha qualquer mensagem. Em minutos vem a resposta, falada e por escrito: o que é, por que é suspeito e o que fazer. Na dúvida, a regra da casa: não pague, não clique, pergunte.</p>
+    </details>
+    <details>
+      <summary>Quem pode ouvir as minhas histórias?</summary>
+      <p>Só quem você convidar — filhos, netos, irmãos. Ninguém entra sem seu convite, e você pode tirar o convite de alguém quando quiser. Seus áudios são seus: dá para baixar tudo ou apagar tudo, a qualquer momento.</p>
+    </details>
+    <details>
+      <summary>Isso "treina o cérebro"? Previne doença?</summary>
+      <p>Vamos ser honestos, porque é assim nesta mesa: exercitar a mente e manter-se conectado fazem bem — mas nenhum aplicativo do mundo pode prometer prevenir demência ou outra doença, e quem promete isso já foi multado por engano lá fora. O que garantimos: você vai aprender a desarmar golpes de verdade, contar histórias que sua família vai guardar para sempre e dominar seu celular um pouco mais a cada dia.</p>
+    </details>
+    <details>
+      <summary>E se eu quiser cancelar?</summary>
+      <p>Cancela na hora, pelo próprio WhatsApp, sem ligação de convencimento e sem letra miúda. E o que é grátis continua grátis para você.</p>
+    </details>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Mesa de Domingo</strong> — Todo dia com gosto de domingo.</p>
+    <p>mesadedomingo.com.br · Belo Horizonte, MG</p>
+    <p>Seus dados protegidos pela LGPD. Este site segue as diretrizes de acessibilidade WCAG 2.2.</p>
+    <p style="margin-top:1rem;font-size:1.35rem">Protótipo de lançamento — julho de 2026.</p>
+  </div>
+</footer>
+
+<script>
+function demoResposta(escolha){
+  var chat=document.getElementById('demo-chat');
+  var botoes=document.getElementById('demo-botoes');
+  var user=document.createElement('div');
+  user.className='msg msg-user';
+  user.textContent= escolha==='golpe' ? '🚨 É golpe' : (escolha==='verdade' ? '✅ É verdade' : '🤔 Não sei');
+  botoes.replaceWith(user);
+
+  var resp=document.createElement('div');
+  resp.className='msg msg-app';
+  if(escolha==='golpe'){
+    resp.innerHTML='<strong>Certo! ✓ Detetive de primeira.</strong><br>É o famoso "golpe do falso filho". O sinal que o entrega: número novo + pedido de dinheiro com pressa. A regra da casa: ligue para o número ANTIGO do seu filho antes de qualquer Pix.<small>Amanhã tem caso novo. ☀️</small>';
+  }else if(escolha==='verdade'){
+    resp.innerHTML='<strong>Era golpe — e ele engana muita gente. ✗</strong><br>É o "golpe do falso filho". O sinal que o entrega: número novo + pedido de dinheiro com pressa. Agora você conhece o truque — e chega na frente da próxima vez.<small>Amanhã tem caso novo. ☀️</small>';
+  }else{
+    resp.innerHTML='<strong>"Não sei" é resposta de gente esperta. 👏</strong><br>Era golpe: o "golpe do falso filho". O sinal que o entrega: número novo + pedido de dinheiro com pressa. Na dúvida, a regra vale ouro: não pague, ligue para o número antigo.<small>Amanhã tem caso novo. ☀️</small>';
+  }
+  chat.appendChild(resp);
+
+  var baú=document.createElement('div');
+  baú.className='msg msg-app';
+  baú.innerHTML='<strong>📻 E a pergunta do Baú de hoje:</strong><br>"Qual música tocava no seu primeiro baile?" Responda com um áudio, do seu jeito.<div class="audio-fake" style="margin-top:.6rem"><button class="play" aria-label="Ouvir exemplo de resposta">▶</button><span class="barra" aria-hidden="true"></span><span>0:42</span></div><small>Dona Célia, 72, respondeu ontem — a neta pediu mais.</small>';
+  setTimeout(function(){chat.appendChild(baú);},900);
+}
+</script>
+</body>
+</html>

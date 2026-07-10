@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mesa de Domingo — Experimente</title>
+<style>
+:root{--cafe:#2B2119;--toalha:#FBF4E8;--branco:#fff;--telha:#9C3F1D;--verde:#22623F;--azul:#14556B;--ambar:#F6C453;--cinza:#5C5247;--fundo-chat:#F2EBDD}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Atkinson Hyperlegible Next','Atkinson Hyperlegible','Segoe UI',Roboto,Arial,sans-serif;background:var(--fundo-chat);color:var(--cafe);font-size:1.5rem;line-height:1.5;height:100dvh;display:flex;flex-direction:column}
+header{background:var(--verde);color:#fff;padding:.9rem 1.2rem;display:flex;align-items:center;gap:.7rem;flex-shrink:0}
+header .titulo{font-weight:800;font-size:1.5rem}
+header .sub{font-size:1.1rem;opacity:.9}
+#chat{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.7rem}
+.msg{max-width:92%;padding:1rem 1.1rem;border-radius:18px;font-size:1.5rem;white-space:pre-wrap;animation:chega .25s ease}
+.bot{background:var(--branco);border:2px solid #E3D9C8;align-self:flex-start;border-bottom-left-radius:6px}
+.eu{background:#DCF3D0;align-self:flex-end;border-bottom-right-radius:6px}
+.sist{align-self:center;color:var(--cinza);font-size:1.15rem;text-align:center;max-width:95%}
+@keyframes chega{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+#acoes{padding: .8rem 1rem;display:flex;flex-direction:column;gap:.55rem;flex-shrink:0;background:var(--fundo-chat)}
+.btn-op{width:100%;min-height:60px;font-size:1.5rem;font-weight:700;font-family:inherit;background:var(--branco);color:var(--cafe);border:3px solid var(--azul);border-radius:16px;padding:.8rem 1rem;cursor:pointer}
+.btn-op:focus-visible,.btn-op:hover{background:#EAF2F5;outline:4px solid var(--cafe);outline-offset:2px}
+#entrada{display:flex;gap:.55rem;padding:.8rem 1rem;background:var(--fundo-chat);flex-shrink:0}
+#texto{flex:1;font-size:1.5rem;font-family:inherit;padding:.9rem 1.1rem;border-radius:999px;border:2px solid #CBBFA8;min-height:60px}
+.redondo{min-width:60px;min-height:60px;border-radius:50%;border:none;color:#fff;font-size:1.15rem;font-weight:700;cursor:pointer;font-family:inherit}
+#btn-falar{background:var(--telha)}
+#btn-enviar{background:var(--verde)}
+#tela-inicio{position:fixed;inset:0;background:var(--toalha);display:flex;align-items:center;justify-content:center;padding:1.5rem;z-index:10}
+.cartao{background:var(--branco);border-radius:24px;padding:2.2rem;max-width:520px;width:100%;text-align:center;box-shadow:0 8px 0 rgba(43,33,25,.12)}
+.cartao h1{font-size:2rem;color:var(--telha);margin-bottom:.5rem}
+.cartao p{font-size:1.35rem;margin:.6rem 0 1.2rem}
+.cartao p.lgpd{font-size:1.1rem;color:var(--cinza)}
+.cartao input{width:100%;font-size:1.5rem;font-family:inherit;padding:1rem;border-radius:14px;border:2px solid var(--telha);margin-bottom:1rem;text-align:center}
+.cartao button{width:100%;min-height:64px;font-size:1.6rem;font-weight:700;font-family:inherit;background:var(--telha);color:#fff;border:none;border-radius:16px;cursor:pointer}
+audio{width:100%;min-height:48px;margin-top:.4rem}
+.oculto{display:none !important}
+</style>
+</head>
+<body>
+<div id="tela-inicio">
+  <div class="cartao">
+    <h1>☀️ Mesa de Domingo</h1>
+    <p>Todo dia: um golpe para desarmar, uma história para contar, uma missão de 5 minutos.</p>
+    <input id="nome-inicial" placeholder="Como você gosta de ser chamado(a)?" aria-label="Seu nome">
+    <button onclick="entrar()">Sentar à mesa</button>
+    <p class="lgpd">O combinado da casa: nesta demonstração, tudo fica guardado só neste aparelho — nada vai para a internet. Para apagar tudo, use o botão "Apagar meus dados" dentro da conversa.</p>
+  </div>
+</div>
+<header>
+  <span style="font-size:1.8rem">☀️</span>
+  <div><div class="titulo">Mesa de Domingo</div><div class="sub" id="status">demonstração — igual ao WhatsApp</div></div>
+</header>
+<main id="chat" aria-live="polite"></main>
+<div id="acoes"></div>
+<div id="entrada" class="oculto">
+  <input id="texto" placeholder="Escreva aqui…" aria-label="Escreva sua mensagem">
+  <button id="btn-falar" class="redondo" onclick="gravar()" aria-label="Gravar áudio">🎙</button>
+  <button id="btn-enviar" class="redondo" onclick="enviarTexto()" aria-label="Enviar">➤</button>
+</div>
+
+<script>
+// ── Mesa de Domingo — demo 100% no navegador (motor local, dados no aparelho) ──
+let C={casos:[],bau:[],missoes:[]}, U=null, gravador=null, pedacos=[];
+const $=id=>document.getElementById(id);
+const hoje=()=>new Date().toISOString().slice(0,10);
+
+function carregarU(){try{U=JSON.parse(localStorage.getItem('mesa_usuario'))}catch(e){U=null}}
+function salvarU(){localStorage.setItem('mesa_usuario',JSON.stringify(U))}
+
+async function init(){
+  const [a,b,c]=await Promise.all(['../conteudo/casos.json','../conteudo/bau.json','../conteudo/missoes.json'].map(u=>fetch(u).then(r=>r.json())));
+  C={casos:a,bau:b,missoes:c};
+  carregarU();
+  if(U&&U.nome){$('tela-inicio').classList.add('oculto');ancoraDoDia(true)}
+}
+function entrar(){
+  const n=$('nome-inicial').value.trim();
+  if(!n){$('nome-inicial').focus();return}
+  if(!U) U={nome:n,inicio:hoje(),acertos:0,historias:[],ultimaAncora:'',missoesFeitas:0};
+  U.nome=n;salvarU();
+  $('tela-inicio').classList.add('oculto');
+  bot('Prazer, '+U.nome+'! Sua cadeira na mesa está garantida.');
+  setTimeout(()=>ancoraDoDia(true),700);
+}
+function dia(){const d1=new Date(U.inicio),dif=Math.floor((new Date(hoje())-d1)/864e5);return Math.min(30,dif+1)}
+
+// ── UI ──
+function bolha(texto,classe){const el=document.createElement('div');el.className='msg '+classe;el.textContent=texto;$('chat').appendChild(el);$('chat').scrollTop=$('chat').scrollHeight;return el}
+function bot(t){return bolha(t,'bot')}
+function eu(t){return bolha(t,'eu')}
+function sist(t){return bolha(t,'sist')}
+function botoes(lista){const a=$('acoes');a.innerHTML='';lista.forEach(([rotulo,fn])=>{const b=document.createElement('button');b.className='btn-op';b.textContent=rotulo;b.onclick=()=>{a.innerHTML='';eu(rotulo);fn()};a.appendChild(b)})}
+function mostrarEntrada(m){$('entrada').classList.toggle('oculto',!m)}
+
+// ── Âncora / caso do dia ──
+function ancoraDoDia(auto){
+  mostrarEntrada(false);
+  const d=dia(),caso=C.casos[(d-1)%30];
+  if(U.ultimaAncora===hoje()&&auto){bot('Bom te ver de novo, '+U.nome+'!');menuDia();return}
+  U.ultimaAncora=hoje();salvarU();
+  bot('☀️ Bom dia, '+U.nome+'! O caso de hoje é: '+caso.titulo+'.\n\nChegou assim no celular de muita gente:\n\n“'+caso.mensagem_golpe+'”');
+  bot('O que você diria?');
+  const resp=r=>{responderCaso(caso,r)};
+  botoes([['🚨 É golpe',()=>resp('golpe')],['✅ É verdade',()=>resp('verdade')],['🤔 Não sei',()=>resp('naosei')]]);
+}
+function responderCaso(caso,r){
+  const certo=caso.resposta_correta;
+  if(r===certo){U.acertos++;salvarU();bot('Detetive de primeira ✓ Era '+(certo==='golpe'?'golpe mesmo':'verdade mesmo')+'.\n\nO sinal: '+caso.sinal_que_entrega+'\n\n'+caso.explicacao+'\n\nRegra de ouro: '+caso.regra_de_ouro)}
+  else if(r==='naosei'){bot('"Não sei" é resposta de gente esperta — na dúvida, não se paga e não se clica.\n\nEra '+(certo==='golpe'?'golpe':'verdade')+'. O sinal: '+caso.sinal_que_entrega+'\n\n'+caso.explicacao)}
+  else{bot('Esse engana muita gente — agora você conhece o truque e chega na frente na próxima.\n\nEra '+(certo==='golpe'?'golpe':'verdade')+'. O sinal: '+caso.sinal_que_entrega+'\n\n'+caso.explicacao+'\n\nRegra de ouro: '+caso.regra_de_ouro)}
+  if(U.acertos>0)bot(U.acertos===1?'Primeiro golpe desarmado com você na mesa. 🕵️':'Já são '+U.acertos+' golpes desarmados com você na mesa. 🕵️');
+  menuDia();
+}
+function menuDia(){
+  bot('E agora, o que vai ser?');
+  botoes([['📻 Pergunta de hoje',perguntaBau],['🏆 Missão de hoje',missaoDia],['🕵️ Verificar uma mensagem',verificar]]);
+  extras();
+}
+function extras(){
+  const a=$('acoes');
+  [['📖 Minhas histórias',verHistorias],['Por hoje chega',()=>{bot('Até amanhã, '+U.nome+'! A mesa fica posta. ☀️');botoes([['Voltar à mesa',menuDia]]);extrasApagar()}]].forEach(([r,f])=>{
+    const b=document.createElement('button');b.className='btn-op';b.style.borderColor='#CBBFA8';b.textContent=r;b.onclick=()=>{$('acoes').innerHTML='';f()};a.appendChild(b)});
+}
+function extrasApagar(){
+  const b=document.createElement('button');b.className='btn-op';b.style.borderColor='#CBBFA8';b.style.fontSize='1.15rem';b.style.minHeight='48px';b.textContent='Apagar meus dados deste aparelho';
+  b.onclick=()=>{if(confirm('Apagar tudo o que ficou guardado neste aparelho?')){localStorage.removeItem('mesa_usuario');location.reload()}};
+  $('acoes').appendChild(b);
+}
+
+// ── Baú de Histórias ──
+function perguntaBau(){
+  const d=dia(),p=C.bau[(d-1)%30];
+  bot('📻 '+p.gancho+'\n\nA pergunta de hoje: '+p.pergunta);
+  sist('Responda por áudio (botão vermelho) ou escreva. Como preferir.');
+  mostrarEntrada(true);U._modo='bau';U._pergunta=p.pergunta;salvarU();
+  botoes([['Pular por hoje',()=>{mostrarEntrada(false);bot('Sem problema — a pergunta fica guardada para quando der vontade.');menuDia()}]]);
+}
+function guardarHistoria(tipo,conteudo){
+  U.historias.push({dia:dia(),pergunta:U._pergunta,tipo,conteudo,em:new Date().toISOString()});
+  U._modo=null;salvarU();mostrarEntrada(false);
+  bot('Sua história de hoje já está no Baú ✓ Sua família vai adorar. Obrigado por contar.');
+  menuDia();
+}
+function verHistorias(){
+  if(!U.historias.length){bot('Seu Baú ainda está esperando a primeira história — que tal responder a pergunta de hoje?')}
+  else{bot('📖 O Baú de '+U.nome+' — '+U.historias.length+' história(s):');
+    U.historias.forEach(h=>{const el=bot('Dia '+h.dia+' — '+h.pergunta);
+      if(h.tipo==='texto'){el.textContent+='\n\n“'+h.conteudo+'”'}
+      else{const au=document.createElement('audio');au.controls=true;au.src=h.conteudo;el.appendChild(au)}});
+    sist('No produto completo, sua família ouve tudo isso por um link que só você dá.')}
+  botoes([['Voltar à mesa',menuDia]]);extrasApagar();
+}
+
+// ── Missão do Dia ──
+function missaoDia(){
+  const d=dia(),m=C.missoes[(d-1)%30];
+  bot('🏆 Missão de hoje: '+m.titulo+'.\n'+m.beneficio);
+  passoMissao(m,0);
+}
+function passoMissao(m,i){
+  if(i>=m.passos.length){U.missoesFeitas++;salvarU();bot('Missão cumprida ✓ Você terminou o dia sabendo fazer uma coisa que ontem não sabia. Isso não é pouco.');menuDia();return}
+  bot('Passo '+(i+1)+' de '+m.passos.length+': '+m.passos[i]);
+  botoes([['✔ Consegui',()=>passoMissao(m,i+1)],['🔄 Me perdi — recomeçar',()=>{bot(m.dica_erro);passoMissao(m,0)}],['Deixar para depois',()=>{bot('Fica para quando você quiser — missão não tem prazo nesta mesa.');menuDia()}]]);
+}
+
+// ── Verificador (demo: análise local) ──
+function verificar(){
+  bot('Recebeu mensagem, ligação ou cobrança esquisita? Cole (ou descreva) aqui embaixo. Você fez certo em conferir — isso é coisa de gente esperta.');
+  mostrarEntrada(true);U._modo='verificar';salvarU();
+  botoes([['Deixar para depois',()=>{mostrarEntrada(false);menuDia()}]]);
+}
+function analisar(t){
+  const s=t.toLowerCase();let sinais=[];
+  if(/pix|transfer/.test(s)&&/urgente|agora|hoje|rápido|rapido/.test(s))sinais.push('pede dinheiro com pressa');
+  if(/n[úu]mero novo|celular novo|chip novo/.test(s))sinais.push('diz que trocou de número');
+  if(/https?:\/\/|bit\.ly|www\./.test(s))sinais.push('traz link para tocar');
+  if(/senha|c[óo]digo|sms/.test(s))sinais.push('pede senha ou código');
+  if(/pr[êe]mio|sorte|ganhou|liberar|taxa/.test(s))sinais.push('promete prêmio ou cobra taxa para liberar');
+  if(/bloquea|suspen|cancela|48h|24h/.test(s))sinais.push('ameaça bloqueio com prazo curto');
+  if(sinais.length>=2){bot('🕵️ Isso tem cara de golpe — confiança alta.\n\nO que entrega: '+sinais.join('; ')+'.\n\nRegra de ouro: na dúvida, não pague, não clique, e confirme pelo número antigo ou pelo canal oficial.')}
+  else if(sinais.length===1){bot('🕵️ Tem um sinal de alerta aqui: '+sinais[0]+'.\n\nNão dá para cravar só por isso — confiança média. A regra vale dobrado: na dúvida, não pague, não clique, confirme pelo canal oficial.')}
+  else{bot('🕵️ Não encontrei os sinais clássicos de golpe — mas nenhuma análise é 100%. Se pedir dinheiro, senha ou pressa, a regra da casa continua: confirme pelo canal oficial antes.')}
+  sist('No produto completo, além desta análise, uma pessoa de verdade da nossa equipe confere e responde em minutos.');
+  U._modo=null;salvarU();mostrarEntrada(false);menuDia();
+}
+
+// ── Entrada de texto e áudio ──
+function enviarTexto(){
+  const t=$('texto').value.trim();if(!t)return;$('texto').value='';eu(t);
+  if(U._modo==='bau')guardarHistoria('texto',t);
+  else if(U._modo==='verificar')analisar(t);
+  else{bot('Anotado! Para navegar, use os botões — um toque resolve.');}
+}
+async function gravar(){
+  if(gravador&&gravador.state==='recording'){gravador.stop();return}
+  if(U._modo!=='bau'){sist('O áudio é para responder a pergunta do Baú — toque em "📻 Pergunta de hoje" primeiro.');return}
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    gravador=new MediaRecorder(stream);pedacos=[];
+    gravador.ondataavailable=e=>pedacos.push(e.data);
+    gravador.onstop=()=>{stream.getTracks().forEach(t=>t.stop());
+      const blob=new Blob(pedacos,{type:gravador.mimeType||'audio/webm'});
+      const leitor=new FileReader();
+      leitor.onload=()=>{eu('🎙 (áudio gravado)');guardarHistoria('audio',leitor.result)};
+      leitor.readAsDataURL(blob);
+      $('btn-falar').textContent='🎙';$('status').textContent='demonstração — igual ao WhatsApp'};
+    gravador.start();$('btn-falar').textContent='⏹';$('status').textContent='gravando… toque em ⏹ para terminar';
+  }catch(e){sist('Preciso da sua permissão para usar o microfone — ou escreva a resposta, como preferir.')}
+}
+$('texto')&&$('texto').addEventListener('keydown',e=>{if(e.key==='Enter')enviarTexto()});
+init();
+</script>
+</body>
+</html>

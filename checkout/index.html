@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mesa de Domingo — Assinar o Plano Mesa</title>
+<style>
+:root{--cafe:#2B2119;--toalha:#FBF4E8;--branco:#fff;--telha:#9C3F1D;--verde:#22623F;--azul:#14556B;--ambar:#F6C453;--cinza:#5C5247}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Atkinson Hyperlegible Next','Atkinson Hyperlegible','Segoe UI',Roboto,Arial,sans-serif;background:var(--toalha);color:var(--cafe);font-size:1.5rem;line-height:1.5;padding:1.5rem}
+.wrap{max-width:640px;margin:0 auto}
+h1{font-size:2rem;color:var(--telha);margin:1rem 0 .5rem}
+h2{font-size:1.6rem;margin:1.5rem 0 .5rem}
+p{margin:.6rem 0}
+a{color:var(--azul)}
+.cartao{background:var(--branco);border-radius:20px;padding:1.8rem;margin:1.2rem 0;border:3px solid #E3D9C8}
+.cartao.heroi{border-color:var(--telha);border-width:4px}
+.preco{font-size:2.3rem;font-weight:800}
+.preco small{font-size:1.35rem;font-weight:400;color:var(--cinza)}
+ul{list-style:none;margin:.8rem 0}
+li{padding:.4rem 0 .4rem 2rem;position:relative;font-size:1.35rem}
+li::before{content:"✓";position:absolute;left:0;color:var(--verde);font-weight:800}
+label{display:block;font-weight:700;font-size:1.5rem;margin:1rem 0 .3rem}
+input{width:100%;font-size:1.5rem;font-family:inherit;padding:.9rem 1rem;border-radius:14px;border:2px solid #CBBFA8}
+input:focus{outline:4px solid var(--cafe);outline-offset:2px}
+.btn{display:block;width:100%;min-height:64px;background:var(--telha);color:#fff;font-size:1.6rem;font-weight:700;font-family:inherit;border:none;border-radius:16px;cursor:pointer;margin-top:1.4rem}
+.btn:hover,.btn:focus-visible{background:#7E3115;outline:4px solid var(--cafe);outline-offset:2px}
+.aviso{background:#FFF7E0;border:2px solid var(--ambar);border-radius:14px;padding:1rem 1.2rem;font-size:1.2rem;margin:1rem 0}
+.pedido{background:#F2EBDD;border-radius:14px;padding:1.2rem;font-size:1.25rem;white-space:pre-wrap;margin:1rem 0}
+.mini{font-size:1.15rem;color:var(--cinza)}
+.oculto{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p><a href="../">← Voltar para o início</a></p>
+  <h1>Assinar o Plano Mesa</h1>
+
+  <div class="cartao heroi">
+    <p class="preco">R$ 179<small>/ano — sai R$ 14,90 por mês</small></p>
+    <ul>
+      <li>Verificação de golpes ilimitada e prioritária</li>
+      <li>Alerta preventivo de golpes da região</li>
+      <li>Painel de tranquilidade para a família</li>
+      <li>Baú de Histórias todo dia, guardado para sempre</li>
+      <li>Todas as trilhas da Missão do Dia</li>
+    </ul>
+    <p class="mini">Prefere experimentar por mês? R$ 19,90/mês, mesmo conteúdo. Cancela quando quiser, sem ligação de retenção.</p>
+  </div>
+
+  <form id="form" onsubmit="return gerar(event)">
+    <h2>Reserva do piloto — Passo 1 de 1</h2>
+    <p class="mini">Estamos começando por Belo Horizonte, com vagas limitadas. Você não paga nada agora: a gente confirma seu lugar primeiro.</p>
+    <label for="idoso">Nome de quem vai usar</label>
+    <input id="idoso" required autocomplete="name">
+    <label for="fone">WhatsApp de quem vai usar (com DDD)</label>
+    <input id="fone" required inputmode="tel" placeholder="31 9 0000-0000">
+    <label for="pagador">Seu nome (quem assina)</label>
+    <input id="pagador" required>
+    <label for="email">Seu e-mail</label>
+    <input id="email" type="email" required>
+    <button class="btn" type="submit">Reservar meu lugar</button>
+  </form>
+
+  <div id="confirmacao" class="oculto">
+    <h2>Pedido anotado ✓</h2>
+    <p>Este é o seu pedido de reserva. Toque no botão para copiá-lo e envie para a gente pelo canal que preferir:</p>
+    <div class="pedido" id="resumo"></div>
+    <button class="btn" onclick="copiar()">Copiar pedido</button>
+    <div class="aviso"><strong>Como funciona no piloto:</strong> envie o pedido para <strong>assinatura@mesadedomingo.com.br</strong> (ou entregue na oficina da sua comunidade). Respondemos com a confirmação da vaga e a chave Pix oficial. Você não paga nada até a gente confirmar o seu lugar — e nunca pediremos senha nem dados de cartão por mensagem.</div>
+    <p class="mini">Guardamos apenas os dados deste pedido, só para organizar o piloto (LGPD). Para cancelar, basta responder o e-mail.</p>
+  </div>
+</div>
+<script>
+function gerar(e){
+  e.preventDefault();
+  const v=id=>document.getElementById(id).value.trim();
+  const texto='RESERVA — Mesa de Domingo (Plano Mesa anual R$ 179)\n'+
+    'Quem vai usar: '+v('idoso')+'\nWhatsApp: '+v('fone')+'\nQuem assina: '+v('pagador')+'\nE-mail: '+v('email')+'\nData: '+new Date().toLocaleDateString('pt-BR');
+  document.getElementById('resumo').textContent=texto;
+  document.getElementById('form').classList.add('oculto');
+  const c=document.getElementById('confirmacao');c.classList.remove('oculto');c.scrollIntoView();
+  return false;
+}
+function copiar(){
+  navigator.clipboard.writeText(document.getElementById('resumo').textContent)
+    .then(()=>alert('Pedido copiado! Agora é só colar no e-mail.'))
+    .catch(()=>alert('Não consegui copiar sozinho — selecione o texto do pedido e copie manualmente.'));
+}
+</script>
+</body>
+</html>
