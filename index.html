@@ -84,6 +84,15 @@
   .card h3{margin-bottom:.6rem}
   .card p{font-size:1.5rem}
 
+  /* Jogos da Casa */
+  .jogos{display:grid;gap:1.25rem;grid-template-columns:1fr;margin-top:2rem}
+  @media(min-width:640px){.jogos{grid-template-columns:1fr 1fr}}
+  @media(min-width:1000px){.jogos{grid-template-columns:repeat(4,1fr)}}
+  .jogo{background:var(--branco);border-radius:20px;padding:1.5rem;border-left:10px solid var(--telha)}
+  .jogo .icone{font-size:2.2rem;display:block;margin-bottom:.5rem}
+  .jogo h3{font-size:1.4rem;margin-bottom:.4rem}
+  .jogo p{font-size:1.35rem;color:var(--cinza)}
+
   /* Faixas alternadas */
   .faixa-branca{background:var(--branco)}
   .faixa-azul{background:var(--azul);color:var(--branco)}
@@ -207,6 +216,57 @@
         <span class="icone" aria-hidden="true">🏆</span>
         <h3>Missão do Dia</h3>
         <p>Uma tarefa de 5 minutos que termina com você sabendo fazer algo novo no celular: fixar o contato da filha, mandar sua localização, fazer videochamada. Com o botão "me perdi, recomeçar" — sem julgamento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOGOS DA CASA -->
+<section id="jogos">
+  <div class="wrap">
+    <h2>E para se divertir: os Jogos da Casa. 🎴</h2>
+    <p style="margin-bottom:.75rem">No aplicativo Mesa de Domingo, todo dia tem <strong>oito passatempos novos</strong> — feitos para quem viveu, onde a sua memória é a vantagem. Sem cronômetro, sem "errou", sem anúncio no meio. Concluiu, descansou: amanhã tem tudo novo na mesa.</p>
+    <p style="margin-bottom:1rem;color:var(--cinza);font-size:1.35rem">Diversão honesta: jogo bom é o que respeita você — não prometemos milagre para a memória, prometemos um bom momento por dia.</p>
+    <div class="jogos">
+      <div class="jogo">
+        <span class="icone" aria-hidden="true">💬</span>
+        <h3>Ditado da Mesa</h3>
+        <p>Complete o ditado — desse assunto você entende.</p>
+      </div>
+      <div class="jogo">
+        <span class="icone" aria-hidden="true">📒</span>
+        <h3>Caderneta de Preços</h3>
+        <p>O que custava mais naquele tempo? Quem viveu, sabe.</p>
+      </div>
+      <div class="jogo">
+        <span class="icone" aria-hidden="true">🗄️</span>
+        <h3>Pares da Cristaleira</h3>
+        <p>Encontre os pares dos objetos da casa, no seu ritmo.</p>
+      </div>
+      <div class="jogo">
+        <span class="icone" aria-hidden="true">🍲</span>
+        <h3>Modo de Preparo</h3>
+        <p>Monte a receita na ordem certa. Anos de fogão valem ouro.</p>
+      </div>
+      <div class="jogo">
+        <span class="icone" aria-hidden="true">🔍</span>
+        <h3>Palavras da Despensa</h3>
+        <p>Caça-palavras da vida de antes, com toque simples — sem arrastar.</p>
+      </div>
+      <div class="jogo">
+        <span class="icone" aria-hidden="true">🧺</span>
+        <h3>Troco da Feira</h3>
+        <p>Conta de cabeça, como na feira. Você confere troco melhor que muito caixa.</p>
+      </div>
+      <div class="jogo">
+        <span class="icone" aria-hidden="true">📖</span>
+        <h3>Almanaque de Domingo</h3>
+        <p>Copas, novelas, rádio: perguntas que só quem viveu acerta.</p>
+      </div>
+      <div class="jogo">
+        <span class="icone" aria-hidden="true">🥘</span>
+        <h3>O Que Não Vai na Panela</h3>
+        <p>Seis itens, um intruso. Quem conhece, conhece.</p>
       </div>
     </div>
   </div>
