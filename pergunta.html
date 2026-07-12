@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mandar uma pergunta — Mesa de Domingo</title>
+<style>
+  :root {
+    --cafe: #2B2119; --toalha: #FBF4E8; --telha: #9C3F1D; --telha-escura: #7E3115;
+    --verde: #22623F; --cinza: #5C5247; --borda: #E3D9C8; --branco: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--toalha); color: var(--cafe);
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 19px; line-height: 1.55; padding: 24px 16px 60px;
+  }
+  main { max-width: 560px; margin: 0 auto; }
+  .sol { font-size: 44px; }
+  h1 { font-size: 30px; line-height: 1.25; margin: 8px 0 12px; }
+  p { margin-bottom: 14px; }
+  .cartao {
+    background: var(--branco); border: 1px solid var(--borda); border-top: 8px solid var(--telha);
+    border-radius: 16px; padding: 20px; margin: 18px 0;
+  }
+  label { display: block; font-weight: 700; margin: 14px 0 6px; }
+  input, textarea {
+    width: 100%; font-size: 19px; font-family: inherit; color: var(--cafe);
+    background: var(--branco); border: 2px solid var(--borda); border-radius: 12px; padding: 12px 14px;
+  }
+  textarea { min-height: 110px; resize: vertical; }
+  input:focus, textarea:focus { outline: 3px solid var(--telha); border-color: var(--telha); }
+  button {
+    width: 100%; margin-top: 18px; background: var(--telha); color: #fff; border: 0;
+    border-radius: 12px; min-height: 56px; font-size: 21px; font-weight: 700; cursor: pointer;
+  }
+  button:active { background: var(--telha-escura); }
+  button[disabled] { opacity: .6; cursor: default; }
+  .sugestoes { color: var(--cinza); font-size: 17px; }
+  .ok { background: #E7F0EA; border: 2px solid var(--verde); border-radius: 12px; padding: 16px; display: none; }
+  .erro { color: var(--telha-escura); font-weight: 700; display: none; margin-top: 10px; }
+  .aviso { color: var(--cinza); font-size: 16px; margin-top: 16px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="sol">☀️</div>
+  <h1>Mande uma pergunta para quem você ama</h1>
+  <p>Essa pessoa guarda as histórias da vida dela no <strong>Mesa de Domingo</strong>.
+     A sua pergunta vai aparecer na mesa dela — e ela responde com a própria voz.</p>
+
+  <div class="cartao" id="formulario">
+    <label for="autor">Seu nome (como ela te conhece)</label>
+    <input id="autor" maxlength="40" placeholder="Ex.: Ana, sua neta" autocomplete="name">
+
+    <label for="pergunta">A pergunta</label>
+    <textarea id="pergunta" maxlength="240" placeholder="Ex.: Como foi o dia do seu casamento?"></textarea>
+    <p class="sugestoes">Ideias que rendem boas histórias: o primeiro emprego, a casa da infância,
+       uma viagem inesquecível, como os avós se conheceram, a receita que só ela sabe.</p>
+
+    <button id="enviar">Mandar para a mesa ☀️</button>
+    <p class="erro" id="erro"></p>
+  </div>
+
+  <div class="ok" id="sucesso">
+    <strong>Pergunta entregue! ☀️</strong><br>
+    Ela vai aparecer no Baú de Histórias, com o seu nome. Quando a resposta vier,
+    combine de ouvir juntos — de preferência num domingo.
+  </div>
+
+  <p class="aviso">A pergunta fica guardada só até ser respondida. Nenhum outro dado seu é coletado.</p>
+</main>
+<script>
+  const URL_SUPABASE = 'https://goxqehelktdkimfgerqc.supabase.co';
+  const CHAVE_PUBLICA = 'sb_publishable_WKPvENTD_FPGNvuq-xWEJw_sR3nrO2E';
+  const mesa = new URLSearchParams(location.search).get('mesa') || '';
+  const uuidValido = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(mesa);
+
+  const botao = document.getElementById('enviar');
+  const erro = document.getElementById('erro');
+
+  if (!uuidValido) {
+    erro.textContent = 'Este link veio incompleto. Peça para a pessoa mandar de novo pelo aplicativo (Minhas histórias → Pedir uma pergunta à família).';
+    erro.style.display = 'block';
+    botao.disabled = true;
+  }
+
+  botao.addEventListener('click', async () => {
+    const autor = document.getElementById('autor').value.trim();
+    const pergunta = document.getElementById('pergunta').value.trim();
+    erro.style.display = 'none';
+    if (autor.length < 1) { erro.textContent = 'Escreva seu nome — ela vai querer saber quem perguntou.'; erro.style.display = 'block'; return; }
+    if (pergunta.length < 5) { erro.textContent = 'Escreva a pergunta com um pouquinho mais de detalhe.'; erro.style.display = 'block'; return; }
+    botao.disabled = true; botao.textContent = 'Mandando…';
+    try {
+      const r = await fetch(URL_SUPABASE + '/rest/v1/mesa_perguntas_familia', {
+        method: 'POST',
+        headers: {
+          apikey: CHAVE_PUBLICA,
+          Authorization: 'Bearer ' + CHAVE_PUBLICA,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ destinatario: mesa, autor: autor, pergunta: pergunta }),
+      });
+      if (!r.ok) throw new Error('falhou');
+      document.getElementById('formulario').style.display = 'none';
+      document.getElementById('sucesso').style.display = 'block';
+    } catch (e) {
+      erro.textContent = 'Não conseguimos mandar agora. Confira a internet e tente de novo.';
+      erro.style.display = 'block';
+      botao.disabled = false; botao.textContent = 'Mandar para a mesa ☀️';
+    }
+  });
+</script>
+</body>
+</html>
